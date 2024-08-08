@@ -1,0 +1,5 @@
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=enuahkevichv
+DB_PASS=vzg516obl
+DB_NAME=BlogDB
