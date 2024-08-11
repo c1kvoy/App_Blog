@@ -10,12 +10,6 @@ from ..models.models import *
 auth_router = APIRouter(tags=['auth'], prefix='/users/auth')
 
 
-@auth_router.on_event("startup")
-async def on_startup():
-    await database.create_tables()
-
-
-# @auth_router.post('/token', response_model=Token)
 @auth_router.post('/register', response_model=user_info.UserOutSchema)
 async def create_user_router(user: user_info.UserInSchema, db_=Depends(database.get_db)):
     user = await create_user(user, db_)
@@ -37,3 +31,4 @@ async def login_router(form: OAuth2PasswordRequestForm = Depends(), db_=Depends(
         'access_token': access_token,
         'token_type': 'bearer',
     }
+

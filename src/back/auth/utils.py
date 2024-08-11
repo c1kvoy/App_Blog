@@ -1,12 +1,20 @@
 import uuid
+
+from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.ext.asyncio import AsyncSession
+from src.back import database
+from ..methods import user_methods
 from ..core.config import settings
 
 from datetime import datetime, timedelta
 import jwt
 import bcrypt
 
-from fastapi import HTTPException as fastapi_HTTPException
+from fastapi import HTTPException as fastapi_HTTPException, Depends
 
+from ..models import models
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/auth/login")
 
 async def hash_password(password: str) -> str:
     salt = bcrypt.gensalt()
@@ -40,7 +48,7 @@ async def jwt_encode(payload: dict,
 async def jwt_decode(token: str,
                      public_key: str = settings.auth.public_key_path.read_text()
                      ) -> dict:
-    return jwt.decode(token, public_key, algorithms=settings.auth.algorithms)
+    return jwt.decode(token, public_key, algorithms=settings.auth.algorithm)
 
 
 async def type_validator(cur: str, required: str):
@@ -64,5 +72,16 @@ async def create_refresh_token(payload: dict,
 
 
 async def expire_validator(payload: dict):
-    if payload['exp'] <= datetime.utcnow():
+    exp_timestamp = payload.get('exp')
+    exp_datetime = datetime.utcfromtimestamp(exp_timestamp)
+    if exp_datetime <= datetime.utcnow():
         raise fastapi_HTTPException(status_code=401,detail=f"Token expired, refresh it")
+
+
+async def authorize(token: str = Depends(oauth2_scheme), db_=Depends(database.get_db)) -> models.UserModel:
+    payload = await jwt_decode(token=token)
+    await expire_validator(payload=payload)
+    await type_validator(payload['type'], settings.auth.ACCESS_TOKEN_TYPE)
+    user = await user_methods.get_user_by_id(payload['sub'], db_)
+    return user
+

@@ -20,3 +20,9 @@ class UserOutSchema(BaseModel):
     email: str
 
 
+class TokenTypeSchema(BaseModel):
+    token: str
+    token_type: str
+
+
+
