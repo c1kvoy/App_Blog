@@ -9,5 +9,5 @@ class UserModel(Base):
     username: Mapped[str] = mapped_column(index=True, nullable=False)
     email: Mapped[str] = mapped_column(index=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(nullable=False)
-    is_active: Mapped[bool] = mapped_column()
+    refresh_token: Mapped[str] = mapped_column(nullable=True)
 

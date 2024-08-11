@@ -6,14 +6,13 @@ class UserDBSchema(BaseModel):
     username: str
     email: str
     hashed_password: str
-    is_active: bool
+    refresh_token: str
 
 
 class UserInSchema(BaseModel):
     username: str
     email: str
     hashed_password: str
-    is_active: bool
 
 class UserOutSchema(BaseModel):
     id: int

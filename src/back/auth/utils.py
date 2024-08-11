@@ -1,6 +1,4 @@
 import uuid
-from typing import Any, Coroutine
-
 from ..core.config import settings
 
 from datetime import datetime, timedelta
@@ -55,14 +53,14 @@ async def create_access_token(payload: dict,
                               token_type: str = settings.auth.ACCESS_TOKEN_TYPE,
                               expires_delta: timedelta = timedelta(minutes=settings.auth.expire_minutes)
                               ):
-    return jwt_encode(payload=payload, token_type=token_type, expires_delta=expires_delta)
+    return await jwt_encode(payload=payload, token_type=token_type, expires_delta=expires_delta)
 
 
 async def create_refresh_token(payload: dict,
                                token_type: str = settings.auth.REFRESH_TOKEN_TYPE,
                                expires_delta: timedelta = timedelta(minutes=settings.auth.expire_days)
                                ):
-    return jwt_encode(payload=payload, token_type=token_type, expires_delta=expires_delta)
+    return await jwt_encode(payload=payload, token_type=token_type, expires_delta=expires_delta)
 
 
 async def expire_validator(payload: dict):
