@@ -37,3 +37,9 @@ async def get_user_by_id(user_id: int, db_: AsyncSession) -> models.UserModel:
     if not result:
         raise fastapi_HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='user not found')
     return result
+
+async def get_users(db_: AsyncSession):
+    query = select(models.UserModel).order_by(models.UserModel.id)
+    result = await db_.execute(query)
+    result = result.scalars().all()
+    return result

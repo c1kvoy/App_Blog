@@ -14,6 +14,7 @@ class UserInSchema(BaseModel):
     email: str
     hashed_password: str
 
+
 class UserOutSchema(BaseModel):
     id: int
     username: str
@@ -23,6 +24,3 @@ class UserOutSchema(BaseModel):
 class TokenTypeSchema(BaseModel):
     token: str
     token_type: str
-
-
-
